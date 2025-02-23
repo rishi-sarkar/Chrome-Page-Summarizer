@@ -1,25 +1,26 @@
 {
     "manifest_version": 3,
-    "name": "Page Summarizer",
+    "name": "Chrome Page Summarizer & Q&A Assistant",
     "version": "1.0",
-    "description": "Summarizes the content of the current page.",
+    "description": "An AI assistant for summarizing and answering questions about web pages.",
     "permissions": [
       "activeTab",
       "scripting"
     ],
     "action": {
       "default_popup": "popup.html",
-      "default_icon": {
-        "16": "icons/icon16.png"
-      }
+      "default_icon": "icons/icon16.png"
     },
     "content_scripts": [
       {
         "matches": ["<all_urls>"],
-        "js": ["contentScript.js"],
-        "run_at": "document_idle"
+        "js": ["contentScript.js"]
       }
     ],
+    "web_accessible_resources": [{
+        "resources": ["flan-t5.onnx", "tokenizer.json"],
+        "matches": ["<all_urls>"]
+    }],    
     "host_permissions": ["<all_urls>"]
   }
   

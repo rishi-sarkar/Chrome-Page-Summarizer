@@ -2,21 +2,23 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Page Summarizer</title>
-  <link rel="stylesheet" href="popup.css">
+  <title>AI Assistant</title>
+  <link rel="stylesheet" type="text/css" href="popup.css">
 </head>
 <body>
-  <h1>Page Summarizer</h1>
-  <button id="summarize">Summarize Page</button>
+  <h1>AI Assistant</h1>
+  <button id="summarize">Summarize This Page</button>
+  <div id="summary"></div>
   
-  <!-- Container for displaying page content -->
-  <div id="displayData"></div>
+  <hr>
   
-  <div id="chat">
-    <textarea id="userInput" placeholder="Ask a question..."></textarea>
-    <div id="conversation"></div>
-  </div>
+  <h2>Ask a Question</h2>
+  <textarea id="question" placeholder="Enter your question here"></textarea>
+  <button id="ask">Ask</button>
+  <div id="answer"></div>
   
+  <!-- Load ONNX Runtime Web for on-device inference -->
+  <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>
