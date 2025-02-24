@@ -1,2 +1,2 @@
-models/onnx_flant5_small/encoder_model.onnx filter=lfs diff=lfs merge=lfs -text
 models/onnx_flant5_small/decoder_model.onnx filter=lfs diff=lfs merge=lfs -text
+models/onnx_flant5_small/encoder_model.onnx filter=lfs diff=lfs merge=lfs -text
