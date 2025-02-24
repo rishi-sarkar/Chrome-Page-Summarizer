@@ -17,10 +17,20 @@
         "js": ["contentScript.js"]
       }
     ],
-    "web_accessible_resources": [{
-        "resources": ["flan-t5.onnx", "tokenizer.json"],
+    "web_accessible_resources": [
+      {
+        "resources": [
+          "models/flan-t5-small/encoder_model.onnx",
+          "models/flan-t5-small/decoder_model.onnx",
+          "models/flan-t5-small/tokenizer.json",
+          "models/flan-t5-small/spiece.model",
+          "models/flan-t5-small/special_tokens_map.json",
+          "models/flan-t5-small/config.json",
+          "tokenizer.json"
+        ],
         "matches": ["<all_urls>"]
-    }],    
+      }
+    ],    
     "host_permissions": ["<all_urls>"]
   }
   
