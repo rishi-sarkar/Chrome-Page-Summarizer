@@ -8,13 +8,13 @@
       "scripting"
     ],
     "action": {
-      "default_popup": "popup.html",
+      "default_popup": "src/popup.html",
       "default_icon": "icons/icon16.png"
     },
     "content_scripts": [
       {
         "matches": ["<all_urls>"],
-        "js": ["contentScript.js"]
+        "js": ["src/contentScript.js"]
       }
     ],
     "web_accessible_resources": [
@@ -25,8 +25,7 @@
           "models/flan-t5-small/tokenizer.json",
           "models/flan-t5-small/spiece.model",
           "models/flan-t5-small/special_tokens_map.json",
-          "models/flan-t5-small/config.json",
-          "tokenizer.json"
+          "models/flan-t5-small/config.json"
         ],
         "matches": ["<all_urls>"]
       }

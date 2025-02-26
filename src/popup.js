@@ -1,6 +1,6 @@
 // popup.js
 
-import { loadTokenizer, tokenizeText, decodeTokens } from './tokenizer.js';
+import { loadTokenizer, tokenizeText, decodeTokens } from './src/tokenizer.js';
 
 // Global variables for models and tokenizer status.
 let encoderSession;

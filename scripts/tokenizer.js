@@ -1,5 +1,3 @@
-import { Tokenizer } from './node_modules/tokenizers';  // or the appropriate import if installed from GitHub
-
 let tokenizer;
 
 export async function loadTokenizer() {
