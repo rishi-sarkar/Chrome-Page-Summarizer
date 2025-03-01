@@ -38,7 +38,7 @@ The objective is to provide a convenient, privacy-focused extension for quick co
 
    - Clone with Git:
      ```bash
-     git clone https://github.com/YourUsername/Text-Summarizer-Chatbot-Extension.git
+     git clone https://github.com/rishi-sarkar/Text-Summarizer-Chatbot-Extension.git
      ```
    - Or download and extract the ZIP from GitHub.
 
@@ -83,7 +83,7 @@ The objective is to provide a convenient, privacy-focused extension for quick co
 
 2. **Inference with ONNX**
 
-   - The extension loads the ONNX model (stored in `model/<model_files>.onnx`) within the browser.
+   - The extension loads the ONNX model (stored in `model/onnx_flant5_small`) within the browser.
    - All inference is performed locally, ensuring user data never leaves the browser.
 
 3. **Summary & Chat**
