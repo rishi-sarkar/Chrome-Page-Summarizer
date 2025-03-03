@@ -1,76 +1,88 @@
 # Text Summarizer + Chatbot Chrome Extension
 
-This repository contains a lightweight Chrome extension that performs two major tasks using a local NLP model in `.onnx` format:
-
+This repository contains a lightweight Chrome extension that performs two major tasks:
 1. **Text Summarizer**: Scrapes and summarizes webpage content in real-time.
 2. **Chatbot**: Simulates an AI “assistant” directly within the browser.
 
-The objective is to provide a convenient, privacy-focused extension for quick content summarization and engaging assistant-like interactions—without the need to send data off to a remote server.
+Both features are powered by a local NLP model in `.onnx` format, wrapped by a **Flask backend** to handle the summarization and chatbot logic. By running Flask locally, the extension ensures all processing is done on your own machine, preserving privacy.
 
 ---
 
 ## Features
 
-1. **Local Inference Using ONNX**
+1. **Local Inference Using Flask + ONNX**  
+   - A lightweight Flask server hosts an ONNX-based NLP model.  
+   - **All inference happens locally**—no external API calls required, keeping data private.
 
-   - Leverages an ONNX-based NLP model to ensure that **all inference is done locally** on the user's machine.
-   - Improves privacy by avoiding the need to send data or prompts to external APIs.
-
-2. **One-Click Summaries**
-
-   - Summarize large chunks of text from any webpage with a single click.
+2. **One-Click Summaries**  
+   - Summarize large chunks of text from any webpage with a single click.  
    - Summaries are concise and easy to read, enabling faster content digestion.
 
-3. **Built-In Chatbot**
+3. **Built-In Chatbot**  
+   - Interact with a friendly AI “assistant” directly in the browser.  
+   - Ask follow-up questions, re-summarize content in different ways, or chat freely—all handled by the local Flask server.
 
-   - Interact with a friendly AI “assistant” directly in the browser.
-   - Ask follow-up questions, re-summarize content in different ways, or chat freely.
-
-4. **Lightweight and User-Friendly**
-   - Installs like any standard Chrome extension—no bulky dependencies.
-   - Minimal overhead with an efficient integration of the `.onnx` model.
+4. **Lightweight and User-Friendly**  
+   - Installs like any standard Chrome extension—no bulky dependencies in the browser itself.  
+   - Minimal overhead thanks to an efficient local model and Flask backend.
 
 ---
 
 ## Installation
 
-1. **Clone or Download this Repository**
-
+1. **Clone or Download this Repository**  
    - Clone with Git:
      ```bash
-     git clone https://github.com/rishi-sarkar/Text-Summarizer-Chatbot-Extension.git
+     git clone https://github.com/YourUsername/Text-Summarizer-Chatbot-Extension.git
      ```
    - Or download and extract the ZIP from GitHub.
 
-2. **Load Extension in Chrome**
+2. **Set up and Run the Flask Backend**  
+   - Navigate to the repository’s root folder (where the Flask app is located).
+   - (Optional) Create and activate a Python virtual environment:
+     ```bash
+     python -m venv venv
+     source venv/bin/activate  # On Windows: venv\Scripts\activate
+     ```
+   - Install dependencies:
+     ```bash
+     pip install -r requirements.txt
+     ```
+   - Run the Flask server:
+     ```bash
+     python app.py
+     ```
+   - By default, Flask should run on `http://127.0.0.1:5000/`.  
+   - **Keep the Flask server running** to handle summaries and chatbot queries locally.
 
+3. **Load Extension in Chrome**  
    1. Open Chrome and go to `chrome://extensions/`.
    2. Enable “Developer Mode” in the top-right corner.
-   3. Click “Load unpacked” and select the folder containing this project.
+   3. Click “Load unpacked” and select the folder containing this project’s **Chrome extension files** (e.g., the `src/` and `manifest.json`).
 
-3. **Verification**
-   - After the extension is loaded, you should see a new extension icon in your browser toolbar.
-   - Clicking the icon should open the interface for both summarization and chatbot interactions.
+4. **Verification**  
+   - After loading, you should see a new extension icon in your browser toolbar.  
+   - Clicking the icon should open the interface for both summarization and chatbot interactions.  
+   - Make sure your Flask server is still running; otherwise, the extension will not be able to retrieve summaries or chat responses.
 
 ---
 
 ## Usage
 
-1. **Summarizing Web Content**
-
-   - Navigate to any webpage with an article or content you’d like to summarize.
-   - Click the extension icon. A small popup will appear with a “Summarize” button.
-   - The extension will scrape the visible text on the page and generate a concise summary.
+1. **Summarizing Web Content**  
+   - Navigate to any webpage with an article or content you’d like to summarize.  
+   - Click the extension icon. A small popup will appear with a “Summarize” button.  
+   - The extension sends the page’s text to the **Flask backend**, which uses the ONNX model to generate a concise summary.  
    - Wait a few seconds for the summary to appear in the popup window.
 
-2. **Chatbot Interaction**
+2. **Chatbot Interaction**  
+   - Open the extension popup by clicking the icon.  
+   - Type your queries or instructions in the chatbot text box.  
+   - The chatbot uses the **Flask server** to process your queries. You can re-summarize the same webpage, fetch specific sections of text on demand, or hold a casual conversation.  
+   - All data processing remains on your computer—no calls to remote APIs.
 
-   - Open the extension popup by clicking the icon.
-   - Type your queries or instructions in the chatbot text box.
-   - The chatbot can re-summarize the same webpage with different parameters, fetch sections of the text on demand, or simply hold a casual conversation—all locally within your browser.
-
-3. **Settings**
-   - There may be configurable settings (e.g., summary length, language preferences) in the extension’s “Options” page.
+3. **Settings**  
+   - There may be configurable settings (e.g., summary length, language preferences) in the extension’s “Options” page.  
    - Access these by right-clicking on the extension icon and selecting “Options.”
 
 ---
