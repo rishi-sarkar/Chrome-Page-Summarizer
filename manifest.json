@@ -5,7 +5,8 @@
     "description": "An AI assistant for summarizing and answering questions about web pages.",
     "permissions": [
       "activeTab",
-      "scripting"
+      "scripting",
+      "http://localhost/*"
     ],
     "action": {
       "default_popup": "src/popup.html",
@@ -17,15 +18,13 @@
         "js": ["src/contentScript.js"]
       }
     ],
+    "content_security_policy": {
+      "extension_pages": "script-src 'self' 'wasm-unsafe-eval'"
+    },
     "web_accessible_resources": [
       {
         "resources": [
-          "models/flan-t5-small/encoder_model.onnx",
-          "models/flan-t5-small/decoder_model.onnx",
-          "models/flan-t5-small/tokenizer.json",
-          "models/flan-t5-small/spiece.model",
-          "models/flan-t5-small/special_tokens_map.json",
-          "models/flan-t5-small/config.json"
+          "models/onnx_flan-t5_small/*"
         ],
         "matches": ["<all_urls>"]
       }
