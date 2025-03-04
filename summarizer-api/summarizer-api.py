@@ -7,7 +7,6 @@ import numpy as np
 import logging
 
 app = Flask(__name__)
-# This enables CORS for all routes by default
 CORS(app, resources={r"/summarize": {"origins": "*"}})
 logging.basicConfig(level=logging.DEBUG)
 
@@ -21,21 +20,21 @@ decoder_session = ort.InferenceSession(
 
 
 def summarize_text(text):
-    # Prepend the task instruction to guide the model
+    # Prepend an instruction to help the model focus on summarization.
     input_text = "summarize: " + text.strip()
-    # Tokenize input text; ensure both input_ids and attention_mask are returned
+    # Tokenize input text; let the tokenizer handle truncation if needed.
     inputs = tokenizer(input_text, return_tensors="np", truncation=True)
     encoder_inputs = {k: v for k, v in inputs.items()}
 
-    # Run the encoder model: using 'input_ids' and 'attention_mask'
+    # Run the encoder using 'input_ids' and 'attention_mask'
     encoder_outputs = encoder_session.run(None, encoder_inputs)
-    # encoder_outputs[0] corresponds to 'last_hidden_state'
+    # encoder_outputs[0] is expected to be the last_hidden_state
 
-    # Generate summary token ids using greedy decoding (increased max_length)
+    # Generate summary token IDs using greedy decoding (with min_length constraint)
     summary_ids = generate_summary_ids(
-        encoder_outputs, encoder_inputs["attention_mask"], max_length=150
+        encoder_outputs, encoder_inputs["attention_mask"], max_length=300, min_length=20
     )
-    # Decode token ids to a string
+    # Decode the token IDs to text
     summary = tokenizer.decode(summary_ids[0], skip_special_tokens=True)
     return summary
 
@@ -59,12 +58,22 @@ def summarize():
     return jsonify({"summary": summary})
 
 
-def generate_summary_ids(encoder_outputs, encoder_attention_mask, max_length=150):
+def generate_summary_ids(encoder_outputs, encoder_attention_mask, max_length=300, min_length=20):
     """
     Greedy decoding loop using the ONNX decoder session.
-    Uses the provided encoder outputs and encoder attention mask.
+    The loop continues until the EOS token is generated AND
+    the generated sequence length reaches at least min_length.
+
+    Args:
+        encoder_outputs: list from the encoder session (encoder_outputs[0] is the last_hidden_state)
+        encoder_attention_mask: the attention mask from the encoder input
+        max_length: maximum number of tokens to generate.
+        min_length: minimum number of tokens to generate before stopping if EOS token is produced.
+
+    Returns:
+        A numpy array containing the generated sequence of token IDs.
     """
-    # T5 (or FLAN-T5) doesn't define a decoder_start_token_id so use pad_token_id as fallback.
+    # Use decoder_start_token_id if available; else use pad_token_id (common for T5/FLAN-T5)
     decoder_start_token_id = getattr(
         tokenizer, "decoder_start_token_id", None) or tokenizer.pad_token_id
 
@@ -72,31 +81,30 @@ def generate_summary_ids(encoder_outputs, encoder_attention_mask, max_length=150
     decoder_input_ids = np.array([[decoder_start_token_id]], dtype=np.int64)
 
     for step in range(max_length):
-        # Create an attention mask for the decoder; here it's simply ones.
+        # Create a decoder attention mask (all ones)
         decoder_attention_mask = np.ones(
             decoder_input_ids.shape, dtype=np.int64)
 
-        # Prepare inputs for the decoder with the exact names expected.
+        # Prepare inputs for the decoder with the expected names.
         decoder_inputs = {
             "input_ids": decoder_input_ids,
             "encoder_hidden_states": encoder_outputs[0],
             "encoder_attention_mask": encoder_attention_mask,
         }
 
-        # Run the decoder; the first output is 'logits'
         outputs = decoder_session.run(None, decoder_inputs)
         logits = outputs[0]  # shape: (batch_size, sequence_length, vocab_size)
 
-        # Greedy decoding: select token with highest logit from the last position
-        next_token_logits = logits[:, -1, :]
-        next_token_id = np.argmax(next_token_logits, axis=-1)
+        # Greedy decoding: select token with highest logit from the last position.
+        next_token_logits = logits[:, -1, :]  # shape: (1, vocab_size)
+        next_token_id = np.argmax(next_token_logits, axis=-1)  # shape: (1,)
 
-        # Append the predicted token to the sequence
+        # Append the new token to the sequence.
         decoder_input_ids = np.concatenate(
             [decoder_input_ids, next_token_id[:, None]], axis=1)
 
-        # Stop if EOS token is produced
-        if next_token_id[0] == tokenizer.eos_token_id:
+        # Check if EOS token is produced and minimum length is reached.
+        if step >= min_length and next_token_id[0] == tokenizer.eos_token_id:
             break
 
     return decoder_input_ids
